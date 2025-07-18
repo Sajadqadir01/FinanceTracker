@@ -1,0 +1,74 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="container">
+    {%if form.errors%}
+    {% for erros in form %}
+
+    <h3>{{erros}}</h3>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+        {{ form.user.label_tag }} {{ form.user }}
+        </div>
+
+        <div class="form-group">
+        {{ form.amount.label_tag }} {{ form.amount }}
+        </div>
+        <div class="form-group">
+        {{ form.category.label_tag }} {{ form.category }}
+        <a href="#" onclick="openPopup('/add_category')" class="btn btn-sm btn-outline-success ml-2">+</a>
+        </div>
+
+        <div class="form-group">
+        {{ form.account.label_tag }} {{ form.account }}
+        <a href="#" onclick="openPopup('/add_account')" class="btn btn-sm btn-outline-success ml-2">+</a>
+        </div>
+        <div class="form-group">
+        {{ form.transaction_type.label_tag }} {{ form.transaction_type }}
+        </div>
+
+
+            <div class="form-group">
+        {{ form.date.label_tag }} {{ form.date }}
+        </div>
+
+        <div class="form-group">
+        {{ form.receipt.label_tag }} {{ form.receipt }}
+        </div>
+        <div class="form-group">
+        {{ form.description.label_tag }} {{ form.description }}
+        </div>
+        <div class="form-group">
+        {{ form.is_confirmed.label_tag }} {{ form.is_confirmed }}
+
+        </div>
+                {% if form.help_text %}
+                    <div class="form-text text-muted">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary w-100">ثبت تراکنش</button>
+    </form>
+</div>
+</body>
+</html>
+<script>
+function openPopup(url) {
+    const win = window.open(url, 'popup', 'width=600,height=400,scrollbars=yes');
+    win.focus();
+}
+</script>
+
+
+
+{%endblock%}

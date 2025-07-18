@@ -1,0 +1,33 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Finance Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Finance Tracker</a>
+            <ul class="nav-links">
+                <li><a href="#">داشبورد</a></li>
+                <li><a href="#">تراکنش‌ها</a></li>
+                <li><a href="#">گزارش‌ها</a></li>
+                <li><a href="#">تنظیمات</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="content">
+        {% block content %}
+        <!-- محتوای صفحات اینجا میاد -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2025 Finance Tracker | ساخته شده توسط سجاد</p>
+    </footer>
+</body>
+</html>
