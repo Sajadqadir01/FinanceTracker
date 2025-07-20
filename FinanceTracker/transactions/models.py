@@ -1,7 +1,8 @@
 from django.db import models
-
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
+
 
 class Account(models.Model):
     ACCOUNT_TYPES = (
@@ -9,7 +10,7 @@ class Account(models.Model):
         ('card', 'کارت بانکی'),
     )
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
     name = models.CharField(max_length=100, verbose_name="نام حساب")
     account_type = models.CharField(max_length=10, choices=ACCOUNT_TYPES, verbose_name="نوع حساب")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ ایجاد")
@@ -27,7 +28,7 @@ class Category(models.Model):
         ('income', 'درآمد'),
         ('expense', 'هزینه'),
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
     name = models.CharField(max_length=100, verbose_name="نام دسته‌بندی")
     type = models.CharField(max_length=10, choices=CATEGORY_TYPES, verbose_name="نوع")
 
@@ -45,7 +46,7 @@ class Transaction(models.Model):
         ('expense', 'هزینه'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
     amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="مبلغ")
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES, verbose_name="نوع تراکنش")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="دسته‌بندی")
