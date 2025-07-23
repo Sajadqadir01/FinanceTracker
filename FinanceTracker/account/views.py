@@ -1,9 +1,16 @@
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.views import View
+from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.urls import reverse_lazy
-from django.contrib.auth import login
-from .forms import LoginForm, RegisterForm
+from django.contrib.auth import login, logout
+from .forms import LoginForm, RegisterForm, InitialBalance, UpdateUserForm
+from django.views.generic import TemplateView
+
+from .models import CustomUser
+
 
 class CustomLoginView(LoginView):
     template_name = 'account/login.html'
@@ -11,8 +18,10 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
 
-class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('login')
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')
 
 
 class RegisterView(FormView):
@@ -31,3 +40,34 @@ class RegisterView(FormView):
         if request.user.is_authenticated:
             return redirect('/')
         return super().dispatch(request, *args, **kwargs)
+
+
+class InitialAssetView(LoginRequiredMixin, FormView):
+    template_name = 'account/initial_asset.html'
+    form_class = InitialBalance
+    success_url = reverse_lazy('dashboard')
+
+    def form_valid(self, form):
+        amount = form.cleaned_data['amount']
+        user = self.request.user
+        user.balance = amount
+        user.save()
+        return super().form_valid(form)
+
+
+class UserDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'account/dashboard.html'
+
+class AccountInfoView(LoginRequiredMixin, TemplateView):
+    model = CustomUser
+    form_class = UpdateUserForm
+    template_name = 'account/account_info.html'
+    success_url = reverse_lazy('dashboard')
+
+    def get_object(self):
+        return self.request.user
+
+
+class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
+    template_name = 'account/change_password.html'
+    success_url = reverse_lazy('login')

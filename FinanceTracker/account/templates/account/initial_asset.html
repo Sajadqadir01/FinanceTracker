@@ -1,0 +1,12 @@
+{% extends 'account/dashboard.html' %}
+{% block dashboard_content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label>مقدار دارایی اولیه (تومان)</label>
+        {{ form.amount }}
+    </div>
+    <button type="submit" class="btn btn-success">ثبت دارایی</button>
+</form>
+
+{% endblock %}

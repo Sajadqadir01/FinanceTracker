@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email', 'first_name', 'last_name', 'phone', 'is_staff', 'is_active')
+    list_display = ('email', 'first_name', 'last_name', 'phone', 'is_staff', 'is_active', 'balance')
     list_filter = ('is_staff', 'is_active')
     search_fields = ('email', 'first_name', 'last_name', 'phone')
     ordering = ('email',)

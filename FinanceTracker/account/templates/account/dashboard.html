@@ -1,0 +1,32 @@
+{# templates/account/dashboard.html #}
+<!DOCTYPE html>
+<html lang="fa" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>داشبورد کاربر</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 shadow-md">
+    <div class="p-6 text-center font-bold text-xl border-b border-gray-700">پنل کاربری</div>
+    <nav class="p-4 space-y-4">
+      <a href="{% url 'account_info' %}" class="block py-2 px-4 rounded hover:bg-gray-700">تکمیل اطلاعات</a>
+      <a href="{% url 'change_password' %}" class="block py-2 px-4 rounded hover:bg-gray-700">تغییر رمز عبور</a>
+      <a href="{% url 'initial_asset' %}" class="block py-2 px-4 rounded hover:bg-gray-700">ثبت دارایی اولیه</a>
+      <a href="{% url 'logout' %}" class="block py-2 px-4 rounded text-red-400 hover:bg-red-800">خروج</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-10 bg-gray-900">
+    {% block dashboard_content %}
+    <!-- محتوای صفحات مختلف اینجا نمایش داده می‌شود -->
+    {% endblock %}
+  </main>
+</div>
+
+</body>
+</html>

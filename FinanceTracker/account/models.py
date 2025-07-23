@@ -33,6 +33,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(_('نام'), max_length=150, blank=True)
     last_name = models.CharField(_('نام خانوادگی'), max_length=150, blank=True)
     phone = models.CharField(_('شماره تماس'), max_length=20, blank=True, unique=True)
+    balance = models.IntegerField(default=0, verbose_name="موجودی کاربر (تومان)")
     is_staff = models.BooleanField(_('کارمند'), default=False)
     is_active = models.BooleanField(_('فعال'), default=True)
     date_joined = models.DateTimeField(_('تاریخ عضویت'), default=timezone.now)
@@ -47,4 +48,4 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'کاربران'
 
     def __str__(self):
-        return self.email
+        return self.phone
