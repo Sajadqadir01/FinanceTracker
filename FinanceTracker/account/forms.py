@@ -33,7 +33,6 @@ class RegisterForm(forms.ModelForm):
 
 
 class InitialBalance(forms.Form):
-
     amount = forms.IntegerField(
         label="مقدار دارایی (تومان)",
         min_value=0,

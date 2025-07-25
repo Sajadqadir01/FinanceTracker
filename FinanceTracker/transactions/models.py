@@ -47,7 +47,7 @@ class Transaction(models.Model):
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False, verbose_name="کاربر")
-    amount = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="مبلغ")
+    amount = models.IntegerField(verbose_name="مبلغ")
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES, verbose_name="نوع تراکنش")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="دسته‌بندی")
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="حساب مالی")

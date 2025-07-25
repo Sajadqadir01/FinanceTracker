@@ -3,10 +3,10 @@ from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.views import View
 from django.contrib.auth import logout
 from django.shortcuts import redirect
-from django.views.generic import FormView
+from django.views.generic import FormView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
-from .forms import LoginForm, RegisterForm, InitialBalance, UpdateUserForm
+from .forms import LoginForm, RegisterForm, InitialBalance, UpdateUserForm, CustomPasswordChangeForm
 from django.views.generic import TemplateView
 
 from .models import CustomUser
@@ -58,7 +58,7 @@ class InitialAssetView(LoginRequiredMixin, FormView):
 class UserDashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'account/dashboard.html'
 
-class AccountInfoView(LoginRequiredMixin, TemplateView):
+class AccountInfoView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     form_class = UpdateUserForm
     template_name = 'account/account_info.html'
@@ -70,4 +70,5 @@ class AccountInfoView(LoginRequiredMixin, TemplateView):
 
 class ChangePasswordView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'account/change_password.html'
+    form_class = CustomPasswordChangeForm
     success_url = reverse_lazy('login')

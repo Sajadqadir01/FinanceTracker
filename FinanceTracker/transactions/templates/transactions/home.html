@@ -3,17 +3,20 @@
 <section class="landing-wrapper">
   <div class="container">
     <div class="intro-box">
-      <h1>اپلیکیشن مدیریت مالی شخصی</h1>
-      <p>با ما کنترل کامل مالی خودت رو داشته باش. ساده، امن و قابل اعتماد.</p>
+        {% if user.is_authenticated %}
+      <h1>سلام {{ user.first_name }}</h1>
+      <p>دارایی شما اکنون {{ user.balance }}</p>
+        {% else %}
       <div class="btn-group">
         <a href="" class="btn btn-primary">ورود</a>
         <a href="" class="btn btn-secondary">ثبت‌نام</a>
       </div>
+        {% endif %}
     </div>
 
     <div class="features-box">
       <div class="feature-item">
-        <h3>📊 داشبورد کامل</h3>
+        <a href="{% url 'dashboard' %}"><h3>📊 داشبورد کامل</h3></a>
         <p>نمایش دقیق درآمد، هزینه و موجودی حساب‌ها در یک نگاه.</p>
       </div>
       <div class="feature-item">
