@@ -27,19 +27,24 @@ class TransactionView(LoginRequiredMixin, FormView):
         user = self.request.user
         if transaction.transaction_type == 'income':
             user.balance += transaction.amount
+
+            user.save()
+            transaction.user = user
+            transaction.save()
+
         else:
             if user.balance < transaction.amount:
                 form.add_error(None, "موجودی کافی نیست.")
                 return self.form_invalid(form)
             user.balance -= transaction.amount
+            user.save()
+            transaction.user = user
+            transaction.save()
+
+        return super().form_valid(form)
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
-
-        user.save()
-        transaction.user = user
-        transaction.save()
-        return super().form_valid(form)
+        return self.render_to_response(self.get_context_data(form=form)), super().form_valid(form)
 
 
 class AccountView(LoginRequiredMixin, FormView):
