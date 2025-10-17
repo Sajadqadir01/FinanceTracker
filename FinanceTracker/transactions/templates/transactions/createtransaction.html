@@ -1,75 +1,88 @@
-{%extends 'base.html'%}
-{%block content%}
-    {% if form.non_field_errors %}
-  <div class="alert alert-danger">
-    {% for error in form.non_field_errors %}
-      <p>{{ error }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
-<div class="container">
+{% extends 'account/dashboard.html' %}
 
-    <form method="post" novalidate>
+{% block dashboard_content %}
+  <h2 class="text-2xl font-semibold mb-4">ثبت تراکنش</h2>
+
+  <div class="card">
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="bg-red-600 text-white p-3 rounded">
+          {% for err in form.non_field_errors %}
+            <div>{{ err }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group">
-        {{ form.user.label_tag }} {{ form.user }}
+
+        <div class="mb-3">
+            <label for="id_amount">مبلغ:</label>
+            {{ form.amount }}
+            {% for error in form.amount.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
-        <div class="form-group">
-        {{ form.amount.label_tag }} {{ form.amount }}
-        </div>
-        <div class="form-group">
-        {{ form.category.label_tag }} {{ form.category }}
-        <a href="#" onclick="openPopup('/add_category')" class="btn btn-sm btn-outline-success ml-2">+</a>
-        </div>
-
-        <div class="form-group">
-        {{ form.account.label_tag }} {{ form.account }}
-        <a href="#" onclick="openPopup('/add_account')" class="btn btn-sm btn-outline-success ml-2">+</a>
-        </div>
-        <div class="form-group">
-        {{ form.transaction_type.label_tag }} {{ form.transaction_type }}
+        <div class="mb-3">
+            <label for="id_transaction_type">نوع تراکنش:</label>
+            {{ form.transaction_type }}
+            {% for error in form.transaction_type.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
-
-            <div class="form-group">
-        {{ form.date.label_tag }} {{ form.date }}
+        <div class="mb-3">
+            <label for="id_category">دسته‌بندی:</label>
+            {{ form.category }}
+                     <a href="{% url 'add_category' %}" class="text-sm text-gray-400 mr-4">ساخت دسته بندی جدید</a>
+            {% for error in form.category.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="id_account">حساب مالی:</label>
+            {{ form.account }}
+                     <a href="{% url 'add_account' %}" class="text-sm text-gray-400 mr-4">ساخت حساب مالی جدید</a>
+            {% for error in form.account.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
 
-        <div class="form-group">
-        {{ form.receipt.label_tag }} {{ form.receipt }}
+        <div class="mb-3">
+            <label for="id_description">توضیحات:</label>
+            {{ form.description }}
+            {% for error in form.description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
-        <div class="form-group">
-        {{ form.description.label_tag }} {{ form.description }}
-        </div>
-        <div class="form-group">
-        {{ form.is_confirmed.label_tag }} {{ form.is_confirmed }}
 
+        <div class="">
+            <label for="id_date">تاریخ تراکنش:</label>
+            {{ form.date }}
+            {% for error in form.date.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
         </div>
-                {% if form.help_text %}
-                    <div class="form-text text-muted">{{ field.help_text }}</div>
-                {% endif %}
-            </div>
-        
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-                {% for error in form.non_field_errors %}
-                    {{ error }}
-                {% endfor %}
-            </div>
-        {% endif %}
-        <button type="submit" class="btn btn-primary w-100">ثبت تراکنش</button>
+
+        <div class="mb-3">
+            <label for="id_receipt">تصویر رسید (اختیاری):</label>
+            {{ form.receipt }}
+            {% for error in form.receipt.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form.is_confirmed }}
+            <label for="id_is_confirmed" class="form-check-label">تأیید شده؟</label>
+        </div>
+
+        <button type="submit" class="btn-submit">ثبت تراکنش</button>
+         <a href="{% url 'dashboard' %}" class="text-sm text-gray-400 mr-4">بازگشت به گزارش‌ها</a>
     </form>
 </div>
-</body>
-</html>
-<script>
-function openPopup(url) {
-    const win = window.open(url, 'popup', 'width=600,height=400,scrollbars=yes');
-    win.focus();
-}
-</script>
+</div>
+{% endblock %}
 
-
-
-{%endblock%}

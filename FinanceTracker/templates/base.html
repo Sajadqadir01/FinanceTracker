@@ -1,33 +1,95 @@
 {%load static%}
+
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl" class="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}Finance Tracker{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}فایننس‌ترکر{% endblock %}</title>
+
+  <!-- Tailwind CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* استایل‌های کمکی برای حالت دارک و راست‌چین */
+    input.form-input, textarea.form-input, select.form-input {
+      background-color: #111827; /* gray-900 */
+      color: #f3f4f6;           /* gray-100 */
+      border: 1px solid #374151; /* gray-700 */
+      border-radius: .5rem;
+      padding: .5rem .75rem;
+      width: 100%;
+    }
+    .btn-primary { background-color: #2563eb; color: #fff; padding: .5rem .9rem; border-radius: .5rem; }
+    .card { background-color: #111827; color: #e5e7eb; padding: 1rem; border-radius: .75rem; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+    /* راست‌چین کردن آیکون‌ها در ناوبری کوچک */
+    .ltr-icon { transform: scaleX(-1); }
+  </style>
+
+  {% block head %}{% endblock %}
 </head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="logo">Finance Tracker</a>
-            <ul class="nav-links">
-                <li><a href="#">داشبورد</a></li>
-                <li><a href="#">تراکنش‌ها</a></li>
-                <li><a href="#">گزارش‌ها</a></li>
-                <li><a href="#">تنظیمات</a></li>
-            </ul>
-        </div>
-    </nav>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans">
 
-    <main class="content">
-        {% block content %}
-        <!-- محتوای صفحات اینجا میاد -->
-        {% endblock %}
-    </main>
+  <!-- NAVBAR -->
+  <header class="bg-gray-800 border-b border-gray-700">
+    <div class="container mx-auto flex items-center justify-between p-4">
+      <div class="flex items-center space-x-4">
+        <button id="sidebarToggle" class="md:hidden text-gray-300 focus:outline-none ml-2">
+          <!-- hamburger -->
+          <svg class="w-6 h-6 ltr-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="{% url 'dashboard' %}" class="text-xl font-bold">فایننس‌ترکر</a>
+      </div>
 
-    <footer>
-        <p>© 2025 Finance Tracker | ساخته شده توسط سجاد</p>
-    </footer>
+      <div class="flex items-center space-x-4">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="hidden md:inline-block text-sm hover:underline">گزارشات</a>
+          <a href="{% url 'account_info' %}" class="hidden md:inline-block text-sm hover:underline">پروفایل</a>
+          <form method="post" action="{% url 'logout' %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-sm text-red-400 hover:underline mr-3">خروج</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="text-sm hover:underline">ورود</a>
+          <a href="{% url 'register' %}" class="ml-3 text-sm hover:underline">ثبت‌نام</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <div class="flex">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-8 text-center text-sm text-gray-400 p-4">
+    © {{ now|date:"Y" }} FinanceTracker — ساخته شده با ❤️
+  </footer>
+
+  <!-- پیام‌ها -->
+  <!-- {% include "includes/messages.html" %} -->
+
+  <!-- اسکریپت‌ها -->
+  <script>
+    // تغییر نمایش سایدبار در موبایل
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    if(sidebarToggle){
+      sidebarToggle.addEventListener('click', () => {
+        if(sidebar.classList.contains('-translate-x-full')){
+          sidebar.classList.remove('-translate-x-full');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+        }
+      });
+    }
+  </script>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

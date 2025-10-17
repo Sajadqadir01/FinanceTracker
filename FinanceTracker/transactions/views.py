@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +10,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def home(request):
-    return render(request, 'transactions/home.html')  # \ رو با / جایگزین کردم (cross-platform بهتره)
+    return render(request, 'transactions/home.html')
 
 class TransactionView(LoginRequiredMixin, FormView):
     model = Transaction
@@ -23,28 +24,18 @@ class TransactionView(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        transaction = form.save(commit=False)
         user = self.request.user
-        if transaction.transaction_type == 'income':
-            user.balance += transaction.amount
+        transaction = form.save(commit=False)
 
-            user.save()
-            transaction.user = user
-            transaction.save()
+        user.save()
+        transaction.user = user
+        transaction.save()
 
-        else:
-            if user.balance < transaction.amount:
-                form.add_error(None, "موجودی کافی نیست.")
-                return self.form_invalid(form)
-            user.balance -= transaction.amount
-            user.save()
-            transaction.user = user
-            transaction.save()
-
+        messages.success(self.request, "تراکنش با موفقیت ثبت شد.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form)), super().form_valid(form)
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class AccountView(LoginRequiredMixin, FormView):
@@ -59,9 +50,9 @@ class AccountView(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        transaction = form.save(commit=False)
-        transaction.user = self.request.user
-        transaction.save()
+        account = form.save(commit=False)
+        account.user = self.request.user
+        account.save()
         return super().form_valid(form)
 
 
@@ -77,7 +68,7 @@ class CategoryView(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        transaction = form.save(commit=False)
-        transaction.user = self.request.user
-        transaction.save()
+        category = form.save(commit=False)
+        category.user = self.request.user
+        category.save()
         return super().form_valid(form)

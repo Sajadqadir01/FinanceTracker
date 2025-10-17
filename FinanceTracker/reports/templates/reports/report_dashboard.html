@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'account/dashboard.html' %}
 
-{% block content %}
+{% comment %} {% block content %}
     <head>
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
@@ -106,4 +106,124 @@
             </div>
         </div>
     </div>
+{% endblock %} {% endcomment %}
+
+
+
+
+{% block title %}گزارش‌ها — FinanceTracker{% endblock %}
+
+{% block dashboard_content %}
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="card col-span-2">
+      <h2 class="text-xl font-semibold mb-4">نمای کلی مالی</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="p-4 rounded bg-green-700 text-right">
+          <div class="text-sm">مجموع درآمد</div>
+          <div class="text-2xl font-bold">{{ income_total|floatformat:0 }} تومان</div>
+        </div>
+        <div class="p-4 rounded bg-red-700 text-right">
+          <div class="text-sm">مجموع هزینه</div>
+          <div class="text-2xl font-bold">{{ expense_total|floatformat:0 }} تومان</div>
+        </div>
+        <div class="p-4 rounded bg-blue-700 text-right">
+          <div class="text-sm">موجودی</div>
+          <div class="text-2xl font-bold">{{ balance|floatformat:0 }} تومان</div>
+        </div>
+      </div>
+
+      <div class="bg-gray-700 rounded p-4">
+        <canvas id="incomeExpenseChart" height="120"></canvas>
+      </div>
+
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-3">تراکنش‌های اخیر</h3>
+        <div class="overflow-auto">
+          <table class="min-w-full text-sm text-right">
+            <thead class="text-gray-400">
+              <tr>
+                <th class="px-3 py-2">تاریخ</th>
+                <th class="px-3 py-2">مبلغ</th>
+                <th class="px-3 py-2">نوع</th>
+                <th class="px-3 py-2">دسته</th>
+                <th class="px-3 py-2">حساب</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in transactions %}
+              <tr class="border-t border-gray-700">
+                <td class="px-3 py-2">{{ t.created_at|date:"Y-m-d H:i" }}</td>
+                <td class="px-3 py-2">{{ t.amount|floatformat:0 }} تومان</td>
+                <td class="px-3 py-2">
+                  {% if t.transaction_type == 'income' %}
+                    <span class="text-green-300">درآمد</span>
+                  {% else %}
+                    <span class="text-red-300">هزینه</span>
+                  {% endif %}
+                </td>
+                <td class="px-3 py-2">{{ t.category.name|default:"—" }}</td>
+                <td class="px-3 py-2">{{ t.account.name|default:"—" }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center py-4 text-gray-400">تراکنشی ثبت نشده است.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ستون راست: اعمال سریع و آمار -->
+    <div class="card">
+      <h3 class="text-lg font-semibold mb-4">اعمال سریع</h3>
+      <a href="{% url 'transaction' %}" class="block btn-primary mb-3 text-center">افزودن تراکنش</a>
+      <a href="{% url 'initial_asset' %}" class="block bg-indigo-600 hover:bg-indigo-500 text-center text-white rounded px-4 py-2">افزودن دارایی اولیه</a>
+
+      <div class="mt-6 text-right">
+        <h4 class="text-sm text-gray-300 mb-2">این ماه</h4>
+        <div class="text-xl font-bold">{{ this_month_total|default:0 }} تومان</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const labels = {{ chart_labels|default:"[]"|safe }};
+  const incomeData = {{ chart_data_income|default:"[]"|safe }};
+  const expenseData = {{ chart_data_expense|default:"[]"|safe }};
+
+  const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'درآمد',
+          data: incomeData,
+          borderColor: 'rgba(34,197,94,0.9)',
+          backgroundColor: 'rgba(34,197,94,0.15)',
+          fill: true,
+          tension: 0.3
+        },
+        {
+          label: 'هزینه',
+          data: expenseData,
+          borderColor: 'rgba(239,68,68,0.9)',
+          backgroundColor: 'rgba(239,68,68,0.12)',
+          fill: true,
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
 {% endblock %}
